@@ -1,0 +1,27 @@
+---
+import PageLayout from '@/layouts/layout.astro'
+import { contactMeta } from '@/config/meta/contacto'
+import {HeroSection} from '@/components'
+import { ContactSection } from '@/components'
+import { ContactInfo, ContactMap} from '@/features'
+
+---
+
+<PageLayout
+  title={contactMeta.title}
+  description={contactMeta.description}
+  image={contactMeta.image}
+  canonical={contactMeta.canonical}
+>
+  <HeroSection
+    title="Contacto"
+    description="Nuestro equipo de abogados especializados está listo para proteger tus intereses y ofrecerte soluciones efectivas."
+    backgroundImage="https://thomsonreuters.scene7.com/is/image/thomsonreutersPROD/cinco-maneras-de-convertirte-en-un-abogado-esencial-header:Hero-m?ts=1751523096669"
+
+   
+  />
+  
+  <ContactInfo />
+  <ContactSection />
+  <ContactMap />
+</PageLayout>

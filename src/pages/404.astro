@@ -1,0 +1,66 @@
+---
+import Layout from '@/layouts/layout.astro'
+import { ROUTES } from '@/config/routes'
+
+const title = 'Página no encontrada - Égida Jurídica'
+const description = 'Lo sentimos, la página que buscas no existe o ha sido movida.'
+---
+
+<Layout title={title} description={description}>
+  <section class="min-h-[calc(100vh-80px)] py-20 lg:py-32">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="grid items-center gap-8 lg:grid-cols-2">
+        <div class="order-2 text-center lg:order-1 lg:text-left">
+          <div class="bg-primary mb-6 inline-flex items-center px-4 py-2 lg:mb-8">
+            <span class="text-sm font-medium uppercase tracking-wide text-white">Error 404</span>
+          </div>
+
+          <h1
+            class="font-heading text-primary mb-4 text-3xl font-bold leading-tight lg:mb-6 lg:text-4xl xl:text-5xl"
+          >
+            Página no encontrada
+          </h1>
+
+          <p class="text-neutral mb-6 text-lg leading-relaxed lg:mb-8 lg:text-xl">
+            La página solicitada no figura en nuestros registros. Tras una exhaustiva revisión del
+            caso, todo indica que fue archivada, movida… o tal vez nunca existió.
+          </p>
+
+          <p class="text-neutral mb-8 text-base leading-relaxed lg:mb-12 lg:text-lg">
+            Puede regresar a nuestra página principal, donde podrá encontrar toda la información
+            sobre nuestros servicios, recursos y contenido legal.
+          </p>
+
+          <div
+            class="flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start"
+          >
+            <a
+              href={ROUTES.home}
+              class="bg-primary focus:ring-primary inline-flex w-full items-center justify-center px-8 py-3 text-base font-medium text-white transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 sm:w-auto"
+            >
+              Volver al Inicio
+            </a>
+            <a
+              href={ROUTES.contact}
+              class="border-neutral text-primary hover:bg-neutral/10 focus:ring-neutral inline-flex w-full items-center justify-center border bg-transparent px-8 py-3 text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 sm:w-auto"
+            >
+              Contactar
+            </a>
+          </div>
+        </div>
+
+        <div
+          class="relative order-1 h-[300px] overflow-hidden rounded-lg sm:h-[350px] lg:order-2 lg:h-[650px]"
+        >
+          <img
+            src="/images/404.png"
+            alt="Abogado en una biblioteca legal"
+            class="h-full w-full object-cover object-top"
+            loading="lazy"
+            style="mask-image: linear-gradient(to bottom, black 80%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

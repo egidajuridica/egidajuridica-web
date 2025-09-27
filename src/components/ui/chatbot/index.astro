@@ -1,0 +1,16 @@
+---
+import Chatbot from './index.tsx'
+
+const props = {
+  title: 'Camila por aquí 👋 \n¿Buscas un espacio o tienes dudas?',
+  name: 'Coordinadora Camila',
+  you: 'Tú',
+  questions: {
+    question1: '¿Qué servicios ofrecen?',
+    question2: '¿Cuáles son los horarios de atención?',
+    question3: '¿Cómo puedo contactarlos?',
+  },
+}
+---
+
+<Chatbot props={props} client:only="react" />

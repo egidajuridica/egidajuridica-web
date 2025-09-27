@@ -1,0 +1,28 @@
+---
+import PageLayout from '@/layouts/layout.astro'
+import { homeMeta } from '@/config/meta'
+import {
+  HeroSection,
+  AboutSection,
+  ServicesSection,
+  FeaturesSection,
+  MembersSection,
+} from '@/features'
+import { Faq, CallToAction, ContactSection } from '@/components'
+---
+
+<PageLayout
+  title={homeMeta.title}
+  description={homeMeta.description}
+  image={homeMeta.image}
+  canonical={homeMeta.canonical}
+>
+  <HeroSection />
+  <AboutSection />
+  <ServicesSection />
+  <FeaturesSection />
+  <MembersSection />
+  <Faq />
+  <CallToAction />
+  <ContactSection />
+</PageLayout>
