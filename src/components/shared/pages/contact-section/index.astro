@@ -63,63 +63,280 @@ import { ADDRESS, EMAIL, PHONE } from '@/config/constants'
                 stroke-width="2"
                 d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
-            <span class="text-neutral font-medium"
-              >{ADDRESS}</span
-            >
+            <span class="text-neutral font-medium">{ADDRESS}</span>
           </div>
         </div>
       </div>
 
       <div class="bg-neutral/5 border-neutral/20 border p-8">
-        <form class="space-y-6">
+        <form id="contact-form" class="space-y-6">
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label for="name" class="text-neutral mb-2 block text-sm font-medium">Nombre</label>
+              <label for="name" class="text-neutral mb-2 block text-sm font-medium">Nombre *</label>
               <input
                 id="name"
+                name="name"
+                required
                 placeholder="Ingresa tu nombre"
                 class="border-neutral/30 focus:ring-primary w-full border bg-white px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2"
               />
+              <span id="name-error" class="hidden text-sm text-red-500"
+                >Este campo es requerido</span
+              >
             </div>
 
             <div>
-              <label for="email" class="text-neutral mb-2 block text-sm font-medium">Email</label>
+              <label for="email" class="text-neutral mb-2 block text-sm font-medium">Email *</label>
               <input
                 id="email"
+                name="email"
                 type="email"
+                required
                 placeholder="Ingresa tu email"
                 class="border-neutral/30 focus:ring-primary w-full border bg-white px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2"
               />
+              <span id="email-error" class="hidden text-sm text-red-500"
+                >Este campo es requerido</span
+              >
             </div>
           </div>
 
           <div>
-            <label for="subject" class="text-neutral mb-2 block text-sm font-medium">Asunto</label>
+            <label for="subject" class="text-neutral mb-2 block text-sm font-medium">Asunto *</label
+            >
             <input
               id="subject"
+              name="subject"
+              required
               placeholder="Ingresa el asunto"
               class="border-neutral/30 focus:ring-primary w-full border bg-white px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2"
             />
+            <span id="subject-error" class="hidden text-sm text-red-500"
+              >Este campo es requerido</span
+            >
           </div>
 
           <div>
-            <label for="message" class="text-neutral mb-2 block text-sm font-medium">Mensaje</label>
+            <label for="message" class="text-neutral mb-2 block text-sm font-medium"
+              >Mensaje *</label
+            >
             <textarea
               id="message"
+              name="message"
+              required
               placeholder="Escribe tu mensaje..."
               rows="6"
               class="border-neutral/30 focus:ring-primary w-full resize-none border bg-white px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2"
             ></textarea>
+            <span id="message-error" class="hidden text-sm text-red-500"
+              >Este campo es requerido</span
+            >
           </div>
 
           <button
             type="submit"
-            class="bg-primary flex w-full items-center justify-center py-3 font-medium text-white transition-colors hover:opacity-80"
+            id="submit-button"
+            class="bg-primary flex w-full items-center justify-center py-3 font-medium text-white transition-colors hover:opacity-80 disabled:opacity-50"
           >
-            Enviar mensaje
+            <span id="button-text">Enviar mensaje</span>
+            <svg
+              id="loading-spinner"
+              class="-mr-1 ml-3 hidden h-5 w-5 animate-spin text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
           </button>
+
+          <!-- Mensaje de éxito -->
+          <div
+            id="success-message"
+            class="hidden border border-green-200 bg-green-100 px-4 py-3 text-center text-green-700"
+          >
+            Se envió correctamente
+          </div>
+
+          <!-- Mensaje de error -->
+          <div
+            id="error-message"
+            class="hidden border border-red-200 bg-red-100 px-4 py-3 text-center text-red-700"
+          >
+            Oops, sucedió un error. Vuelve a intentar más tarde
+          </div>
         </form>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  import apiClient from '@/services'
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('contact-form') as HTMLFormElement
+    const submitButton = document.getElementById('submit-button') as HTMLButtonElement
+    const buttonText = document.getElementById('button-text') as HTMLSpanElement
+    const loadingSpinner = document.getElementById('loading-spinner') as HTMLElement
+    const successMessage = document.getElementById('success-message') as HTMLElement
+    const errorMessage = document.getElementById('error-message') as HTMLElement
+
+    // Elementos del formulario
+    const nameInput = document.getElementById('name') as HTMLInputElement
+    const emailInput = document.getElementById('email') as HTMLInputElement
+    const subjectInput = document.getElementById('subject') as HTMLInputElement
+    const messageInput = document.getElementById('message') as HTMLTextAreaElement
+
+    // Elementos de error
+    const nameError = document.getElementById('name-error') as HTMLElement
+    const emailError = document.getElementById('email-error') as HTMLElement
+    const subjectError = document.getElementById('subject-error') as HTMLElement
+    const messageError = document.getElementById('message-error') as HTMLElement
+
+    // Función para mostrar errores
+    function showError(
+      input: HTMLInputElement | HTMLTextAreaElement,
+      errorElement: HTMLElement,
+      message: string,
+    ) {
+      input.classList.add('border-red-500')
+      input.classList.remove('border-neutral/30')
+      errorElement.textContent = message
+      errorElement.classList.remove('hidden')
+    }
+
+    // Función para limpiar errores
+    function clearError(input: HTMLInputElement | HTMLTextAreaElement, errorElement: HTMLElement) {
+      input.classList.remove('border-red-500')
+      input.classList.add('border-neutral/30')
+      errorElement.classList.add('hidden')
+    }
+
+    // Función para validar email
+    function isValidEmail(email: string): boolean {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      return emailRegex.test(email)
+    }
+
+    // Función para validar el formulario
+    function validateForm(): boolean {
+      let isValid = true
+
+      // Limpiar mensajes anteriores
+      successMessage.classList.add('hidden')
+      errorMessage.classList.add('hidden')
+
+      // Validar nombre
+      if (!nameInput.value.trim()) {
+        showError(nameInput, nameError, 'Este campo es requerido')
+        isValid = false
+      } else {
+        clearError(nameInput, nameError)
+      }
+
+      // Validar email
+      if (!emailInput.value.trim()) {
+        showError(emailInput, emailError, 'Este campo es requerido')
+        isValid = false
+      } else if (!isValidEmail(emailInput.value.trim())) {
+        showError(emailInput, emailError, 'Por favor ingresa un email válido')
+        isValid = false
+      } else {
+        clearError(emailInput, emailError)
+      }
+
+      // Validar asunto
+      if (!subjectInput.value.trim()) {
+        showError(subjectInput, subjectError, 'Este campo es requerido')
+        isValid = false
+      } else {
+        clearError(subjectInput, subjectError)
+      }
+
+      // Validar mensaje
+      if (!messageInput.value.trim()) {
+        showError(messageInput, messageError, 'Este campo es requerido')
+        isValid = false
+      } else {
+        clearError(messageInput, messageError)
+      }
+
+      return isValid
+    }
+
+    // Función para mostrar estado de carga
+    function setLoadingState(loading: boolean) {
+      submitButton.disabled = loading
+      if (loading) {
+        buttonText.textContent = 'Enviando...'
+        loadingSpinner.classList.remove('hidden')
+      } else {
+        buttonText.textContent = 'Enviar mensaje'
+        loadingSpinner.classList.add('hidden')
+      }
+    }
+
+    // Función para enviar el formulario
+    async function submitForm(formData: FormData) {
+      const data = {
+        name: formData.get('name') as string,
+        email: formData.get('email') as string,
+        subject: formData.get('subject') as string,
+        message: formData.get('message') as string,
+      }
+
+      try {
+        setLoadingState(true)
+
+        const response = await apiClient.post('/form', data)
+
+        if (response.status === 200 || response.status === 201) {
+          // Éxito
+          successMessage.classList.remove('hidden')
+          form.reset()
+
+          // Limpiar cualquier error visible
+          clearError(nameInput, nameError)
+          clearError(emailInput, emailError)
+          clearError(subjectInput, subjectError)
+          clearError(messageInput, messageError)
+        } else {
+          throw new Error('Error en la respuesta del servidor')
+        }
+      } catch (error) {
+        console.error('Error al enviar el formulario:', error)
+        errorMessage.classList.remove('hidden')
+      } finally {
+        setLoadingState(false)
+      }
+    }
+
+    // Event listener para el formulario
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault()
+
+      if (validateForm()) {
+        const formData = new FormData(form)
+        await submitForm(formData)
+      }
+    })
+
+    // Event listeners para limpiar errores mientras el usuario escribe
+    nameInput.addEventListener('input', () => clearError(nameInput, nameError))
+    emailInput.addEventListener('input', () => clearError(emailInput, emailError))
+    subjectInput.addEventListener('input', () => clearError(subjectInput, subjectError))
+    messageInput.addEventListener('input', () => clearError(messageInput, messageError))
+  })
+</script>
