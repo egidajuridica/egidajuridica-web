@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
+    "preview": "astro preview --port 4324",
     "astro": "astro",
     "lint": "eslint --ext .astro .",
     "lint:fix": "eslint --ext .astro --fix ."

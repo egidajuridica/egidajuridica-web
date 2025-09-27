@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config'
 import react from '@astrojs/react'
 import tailwindcss from '@tailwindcss/vite'
 import sitemap from '@astrojs/sitemap'
-import node from "@astrojs/node";
+import node from '@astrojs/node'
 
 export default defineConfig({
   site: 'https://egidajuridica.com',
@@ -13,5 +13,8 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+  },
+  preview: {
+    port: 4324,
   },
 })
