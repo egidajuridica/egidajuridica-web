@@ -7,13 +7,19 @@ import node from '@astrojs/node'
 
 export default defineConfig({
   site: 'https://egidajuridica.com',
-  output: 'server', // SSR
+  output: 'server',
   adapter: node({ mode: 'standalone' }),
   integrations: [sitemap(), react()],
 
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      proxy: {
+        '/api': 'http://localhost:10000',
+      },
+    },
   },
+
   preview: {
     port: 4324,
   },
