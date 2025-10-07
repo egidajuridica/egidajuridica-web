@@ -1,1 +1,1 @@
-export * from './search-resumen-item'
+export { SearchResultItemCard } from './search-resumen-item';
