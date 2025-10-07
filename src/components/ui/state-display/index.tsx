@@ -1,4 +1,4 @@
-import { LoaderCircle, AlertCircle, SearchX, AlertCircleIcon } from 'lucide-react'
+import { SearchX } from 'lucide-react'
 import React from 'react'
 
 interface StateDisplayProps<T> {
@@ -8,6 +8,7 @@ interface StateDisplayProps<T> {
   messages?: {
     loading?: string
     empty?: string
+    error?: string
   }
 }
 
@@ -18,8 +19,6 @@ const StatusWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 )
 
 export const StateDisplay = <T,>({ isLoading, error, data, messages }: StateDisplayProps<T>) => {
-  console.log(isLoading, error, data)
-
   if (isLoading) {
     return <div className="bg-primary/10 h-[500px] w-full animate-pulse"></div>
   }
