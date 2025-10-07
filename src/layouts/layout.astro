@@ -10,6 +10,7 @@ import {
 import { Header, Footer } from '@/components'
 import WhatsappButton from '@/components/ui/whatsapp-button/index.astro'
 import Chatbot from '@/components/ui/chatbot/index.astro'
+import { SearchModal } from '@/components/ui/search-modal';
 
 interface Props extends SEOConfig {}
 
@@ -167,6 +168,7 @@ const finalStructuredData = structuredData || createDefaultStructuredData(baseSi
       <slot />
     </main>
     <Footer />
+    <SearchModal client:load />
 
     <style>
       *,
