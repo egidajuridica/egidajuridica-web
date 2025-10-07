@@ -1,6 +1,7 @@
 ---
 import PageLayout from '@/layouts/layout.astro'
-import { getArticleResourceBySlug } from '@/features'
+import { getLegalResourceBySlug } from '@/features';
+import { renderContentToHtml } from '@/utils';
 import { Calendar } from 'lucide-react'
 
 const { slug } = Astro.params
@@ -9,10 +10,19 @@ if (!slug) {
   return Astro.redirect('/404')
 }
 
-const resource = await getArticleResourceBySlug(slug)
+const resource = await getLegalResourceBySlug(slug)
 
 if (!resource) {
   return Astro.redirect('/404')
+}
+
+const contentHtml = resource.contenido ? renderContentToHtml(resource.contenido) : '';
+
+const articleDisplayTags: string[] = [];
+if (resource.tags?.length > 0) {
+  resource.tags.forEach(tag => {
+    articleDisplayTags.push(tag.name);
+  });
 }
 
 const formatDate = (dateString: string) => {
@@ -22,57 +32,46 @@ const formatDate = (dateString: string) => {
     day: 'numeric',
   })
 }
-
-const allTags = [
-  resource.tags.name,
-  ...resource.resourceTags.map((t) => t.name).filter((name) => name !== resource.tags.name),
-]
 ---
 
-<PageLayout
-  title={resource.titulo}
-  description={resource.descripcion}
-  image={resource.imagenDestacada?.url}
->
-  <main class="bg-white py-12 lg:py-16">
+<PageLayout title={resource.titulo} description={resource.descripcion} image={resource.imagenDestacada?.url}>
+  <main class="py-12 lg:py-16">
     <article class="prose prose-lg mx-auto max-w-4xl px-4">
-      {
-        resource.imagenDestacada?.url && (
-          <img
-            src={resource.imagenDestacada.url}
-            alt={resource.imagenDestacada.alt}
-            class="mb-8 w-full rounded-lg"
-          />
-        )
-      }
-
+      
+      {resource.imagenDestacada?.url && <img src={resource.imagenDestacada.url} alt={resource.imagenDestacada.alt} class="mb-8 w-full rounded-lg" />}
+      
+      <div class="not-prose mb-6 flex flex-wrap items-center gap-4">
+        {resource.category && (
+          <div class="inline-flex self-start bg-black px-4 py-2">
+            <span class="text-sm font-medium uppercase tracking-wide text-white">
+              {resource.category.name}
+            </span>
+          </div>
+        )}
+        {articleDisplayTags.length > 0 && (
+          <div class="flex flex-wrap items-center gap-2">
+            {articleDisplayTags.map((tagName) => (
+              <span class="bg-neutral-100 text-neutral-800 rounded-md px-3 py-1 text-sm font-medium">
+                {tagName}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+      
       <h1 class="font-heading text-primary text-4xl font-bold">{resource.titulo}</h1>
-
-      <div class="text-neutral mb-8 flex items-center gap-6 text-base">
+      
+      <div class="text-neutral mb-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-base not-prose">
         <div class="flex items-center gap-2">
           <Calendar client:visible className="h-4 w-4" />
           <span>{formatDate(resource.fechaPublicacion)}</span>
         </div>
       </div>
 
-      {
-        allTags.length > 0 && (
-          <div class="mb-8 flex flex-wrap gap-2">
-            {allTags.map((tagName) => (
-              <span class="bg-primary/10 text-primary rounded-full px-3 py-1 text-sm font-medium">
-                {tagName}
-              </span>
-            ))}
-          </div>
-        )
-      }
-
       <hr class="mb-8" />
+      
+      <div class="prose prose-lg max-w-none" set:html={contentHtml} />
 
-      <div
-        class="prose-p:text-neutral prose-headings:text-primary"
-        set:html={resource.contenidoHtml}
-      />
     </article>
   </main>
 </PageLayout>
