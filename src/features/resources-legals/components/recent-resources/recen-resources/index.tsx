@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+/*import { useState, useEffect } from 'react'
 import { ArrowRight, AlertCircle } from 'lucide-react'
 import { getLegalResources, type LegalResource } from '../../../api'
 import { RecentResourceCard } from '../recent-resource-card'
@@ -43,7 +43,6 @@ export const RecentResources = () => {
   return (
     <section className="relative bg-white py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Header Section */}
         <div className="grid items-start gap-12 lg:grid-cols-2">
           <div className="space-y-4">
             <div className="bg-primary mb-6 inline-flex items-center px-4 py-2">
@@ -66,7 +65,6 @@ export const RecentResources = () => {
           </div>
         </div>
 
-        {/* Resources Grid */}
         <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {isLoading ? (
             <>
@@ -93,3 +91,4 @@ export const RecentResources = () => {
 }
 
 export default RecentResources
+*/

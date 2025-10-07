@@ -1,95 +1,78 @@
-import axios from 'axios'
-import { API_CONFIG, ENDPOINTS } from '@/config/env/api'
-import type {
-  LegalResourcesApiResponse,
-  ResourceTagsApiResponse,
-  ArticleResource,
-  LegalResource,
-  ResourceTag,
-} from '../types'
+import apiClient from '@/services';
+import { ENDPOINTS } from '@/config/env/api';
+import type { LegalResource, LegalResourcesApiResponse } from '../types';
+import type { Category } from '@/features';
 
-const apiClient = axios.create({
-  baseURL: API_CONFIG.baseURL,
-  timeout: API_CONFIG.timeout,
-})
-
-interface GetResourcesParams {
-  page?: number
-  limit?: number
-  search?: string
-  tagId?: string
+interface GetLegalResourcesParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  categoryId?: string | null;
+  tagId?: string | null; 
 }
 
-/**
- * Obtiene los recursos legales desde la API, con soporte para paginación y filtros.
- */
-export const getLegalResources = async (
-  params: GetResourcesParams = {},
-): Promise<LegalResourcesApiResponse> => {
-  const { page = 1, limit = 9, search, tagId } = params
-
-  const queryParams: Record<string, any> = {
-    page,
-    limit,
-    sort: '-fechaPublicacion',
-    depth: 2,
-  }
-
-  const where: Record<string, any> = {}
-
-  if (search) {
-    where['or'] = [{ titulo: { like: search } }, { descripcion: { like: search } }]
-  }
-  if (tagId) {
-    where['resourceTags'] = { in: [tagId] }
-  }
-
-  if (Object.keys(where).length > 0) {
-    queryParams.where = where
-  }
-
+const getLegalResources = async (params: GetLegalResourcesParams = {}): Promise<LegalResourcesApiResponse> => {
   try {
-    const response = await apiClient.get<LegalResourcesApiResponse>(ENDPOINTS.recursos, {
-      params: queryParams,
-    })
-    return response.data
+    const queryParams: Record<string, any> = {
+      page: params.page || 1,
+      limit: params.limit || 10,
+      depth: 2, 
+    };
+    const where: Record<string, any> = {};
+    if (params.search) {
+      where.titulo = { like: params.search }; 
+    }
+    if (params.categoryId) {
+      where.category = { equals: params.categoryId };
+    } else if (params.tagId) {
+      where.tags = { in: [params.tagId] };
+    }
+    if (Object.keys(where).length > 0) {
+      queryParams.where = where;
+    }
+    const response = await apiClient.get<LegalResourcesApiResponse>(ENDPOINTS.recursos, { params: queryParams });
+    return response.data;
   } catch (error) {
-    throw new Error('No se pudieron obtener los recursos legales.')
+    throw new Error('No se pudieron obtener los recursos legales.');
   }
-}
+};
 
-/**
- * Obtiene todas las etiquetas disponibles para los recursos.
- */
-export const getResourceTags = async (): Promise<ResourceTag[]> => {
+
+const getLegalCategories = async (): Promise<Category[]> => {
   try {
-    const response = await apiClient.get<ResourceTagsApiResponse>(ENDPOINTS.resourceTags)
-
-    return response.data.docs
+    const response = await apiClient.get<{ docs: Category[] }>(ENDPOINTS.categories, {
+      params: {
+        limit: 100,
+        depth: 1,
+        where: { scope: { equals: 'legal' } },
+      },
+    });
+    return response.data.docs;
   } catch (error) {
-    throw new Error('No se pudieron obtener las etiquetas de los recursos.')
+    throw new Error('No se pudieron obtener las categorías legales.');
   }
-}
+};
 
-/**
- * Obtiene un único recurso de tipo 'articulo' por su slug.
- */
-export const getArticleResourceBySlug = async (slug: string): Promise<ArticleResource | null> => {
+const getLegalResourceBySlug = async (slug: string): Promise<LegalResource | null> => {
   try {
     const response = await apiClient.get<LegalResourcesApiResponse>(ENDPOINTS.recursos, {
       params: {
-        'where[slug][equals]': slug,
-        'where[tipo][equals]': 'articulo',
-        depth: 2,
+        where: { slug: { equals: slug } },
+        limit: 1,
+        depth: 2, 
       },
-    })
+    });
 
-    if (response.data.docs && response.data.docs.length > 0) {
-      return response.data.docs[0] as ArticleResource
+    const resource = response.data.docs[0];
+
+    if (!resource || resource.tipo !== 'articulo') {
+      return null;
     }
 
-    return null
-  } catch (error) {
-    throw new Error('No se pudo obtener el recurso.')
+    return resource;
+  } catch (error: any) {
+    throw new Error('No se pudo obtener el dato del recurso legal.');
   }
-}
+};
+
+export { getLegalResources, getLegalCategories, getLegalResourceBySlug };

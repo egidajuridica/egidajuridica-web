@@ -1,65 +1,37 @@
-export interface ResourceTag {
-  id: string
-  name: string
-  slug: string
+import type { RichTextContent } from '@/types/content.types';
+import type { Category, Image, Tag } from '@/features';
+
+export interface Archivo {
+  id: string;
+  url: string;
+  filename: string;
+  mimeType: string;
+  filesize: number;
 }
 
-export interface ResourceCategory {
-  id: string
-  name: string
-  slug: string
+export interface LegalResource {
+  id: string;
+  tipo: 'articulo' | 'documento';
+  titulo: string;
+  slug: string; 
+  descripcion: string;
+  category: Category;
+  tags: Tag[];
+  imagenDestacada: Image;
+  contenido?: RichTextContent; 
+  archivo?: Archivo;          
+  fechaPublicacion: string;
 }
-
-export interface ResourceImage {
-  id: string
-  url: string
-  alt: string
-}
-
-export interface ResourceFile {
-  id: string
-  url: string
-  filename: string
-  mimeType: string
-  filesize: number
-}
-
-interface ResourceBase {
-  id: string
-  titulo: string
-  descripcion: string
-  imagenDestacada: ResourceImage
-  tags: ResourceCategory
-  resourceTags: ResourceTag[]
-  fechaPublicacion: string
-}
-
-export interface ArticleResource extends ResourceBase {
-  tipo: 'articulo'
-  slug: string
-  contenidoHtml: string
-  archivo?: never
-}
-
-export interface DocumentResource extends ResourceBase {
-  tipo: 'documento'
-  archivo: ResourceFile
-  slug?: never
-  contenidoHtml?: never
-}
-
-export type LegalResource = ArticleResource | DocumentResource
 
 export interface LegalResourcesApiResponse {
-  docs: LegalResource[]
-  totalDocs: number
-  limit: number
-  totalPages: number
-  page: number
-  hasPrevPage: boolean
-  hasNextPage: boolean
-}
-
-export interface ResourceTagsApiResponse {
-  docs: ResourceTag[]
+  docs: LegalResource[];
+  totalDocs: number;
+  limit: number;
+  totalPages: number;
+  page: number;
+  pagingCounter: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+  prevPage: number | null;
+  nextPage: number | null;
 }

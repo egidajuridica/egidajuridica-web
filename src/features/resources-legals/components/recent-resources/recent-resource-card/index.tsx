@@ -1,4 +1,4 @@
-import type { LegalResource } from '../../../api'
+/*import type { LegalResource } from '../../../api'
 import { extractAllResourceTags } from '../../../utils'
 
 const formatDate = (dateString: string) => {
@@ -59,3 +59,4 @@ export const RecentResourceCard = ({ resource }: RecentResourceCardProps) => {
     </a>
   )
 }
+*/
