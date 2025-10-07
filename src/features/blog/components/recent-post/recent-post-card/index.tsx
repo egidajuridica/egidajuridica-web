@@ -1,4 +1,4 @@
-import type { BlogPost } from '@/features'
+/*import type { BlogPost } from '@/features/blog/api'
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('es-ES', {
@@ -15,14 +15,14 @@ interface RecentPostCardProps {
 export const RecentPostCard = ({ post }: RecentPostCardProps) => {
   const allDisplayTags: string[] = []
 
-  if (post.tags && post.tags.name) {
-    allDisplayTags.push(post.tags.name)
+  if (post.category && post.category.name) {
+    allDisplayTags.push(post.category.name)
   }
 
-  if (post.blogTags && Array.isArray(post.blogTags) && post.blogTags.length > 0) {
-    post.blogTags.forEach((tag) => {
-      if (tag && tag.title && !allDisplayTags.includes(tag.title)) {
-        allDisplayTags.push(tag.title)
+  if (post.tags && Array.isArray(post.tags)) {
+    post.tags.forEach((tag) => {
+      if (tag && tag.name && !allDisplayTags.includes(tag.name)) {
+        allDisplayTags.push(tag.name)
       }
     })
   }
@@ -30,7 +30,7 @@ export const RecentPostCard = ({ post }: RecentPostCardProps) => {
   return (
     <a href={`/blog/${post.slug}`} className="group block">
       <article className="flex h-full flex-col">
-        {/* Image */}
+        {/* Image }
         <div className="relative mb-6 h-80 w-full overflow-hidden">
           <img
             src={post.image?.url}
@@ -40,7 +40,7 @@ export const RecentPostCard = ({ post }: RecentPostCardProps) => {
           />
         </div>
 
-        {/* Content */}
+        {/* Content }
         <div className="flex flex-1 flex-col space-y-3">
           {allDisplayTags.length > 0 && (
             <div className="flex flex-wrap gap-2">
@@ -54,12 +54,12 @@ export const RecentPostCard = ({ post }: RecentPostCardProps) => {
             </div>
           )}
 
-          {/* Title */}
+          {/* Title }
           <h3 className="font-heading group-hover:text-neutral/80 flex-grow text-lg font-bold leading-tight text-white transition-colors">
             {post.title}
           </h3>
 
-          {/* Metadata & Separator */}
+          {/* Metadata & Separator }
           <div className="pt-2">
             <div className="h-px w-full bg-gray-700"></div>
             <div className="pt-3 text-sm text-gray-400">{formatDate(post.publishedDate)}</div>
@@ -69,3 +69,4 @@ export const RecentPostCard = ({ post }: RecentPostCardProps) => {
     </a>
   )
 }
+*/

@@ -1,1 +1,1 @@
-export * from './useBlogStore'
+export {useBlog} from './useBlog';

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Pagination } from '@/components'
 
 const BlogPagination = () => {
@@ -11,7 +10,7 @@ const BlogPagination = () => {
             totalPages={3}
             onPageChange={() => {}}
             showFirstLast={true}
-            maxVisiblePages={5}
+            maxVisiblePages={6}
           />
         </div>
       </div>

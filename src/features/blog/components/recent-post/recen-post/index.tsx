@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+/*import { useEffect } from 'react'
 import { ArrowRight, AlertCircle } from 'lucide-react'
-import { getBlogPosts, type BlogPost } from '@/features'
+import { useBlog } from '@/features/blog/hooks'
 import { RecentPostCard } from '../recent-post-card'
 import { ROUTES } from '@/config/routes'
+import type { BlogPost } from '@/features/blog/api'
 
 const PostSkeleton = () => (
   <div className="flex h-full animate-pulse flex-col">
@@ -20,32 +21,21 @@ const PostSkeleton = () => (
 )
 
 export const RecentPost = () => {
-  const [posts, setPosts] = useState<BlogPost[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { recentPosts, isLoadingRecent, fetchRecentPosts, error } = useBlog()
 
   useEffect(() => {
-    const fetchRecentPosts = async () => {
-      try {
-        const response = await getBlogPosts({ limit: 3 })
-        console.log('[DEBUG-COMPONENT] Respuesta obtenida:', response.docs)
-        setPosts(response.docs as BlogPost[])
-      } catch (err) {
-        setError('No se pudieron cargar los artículos recientes.')
-      } finally {
-        setIsLoading(false)
-      }
+    if (recentPosts.length === 0) {
+      fetchRecentPosts()
     }
+  }, [fetchRecentPosts, recentPosts.length])
 
-    fetchRecentPosts()
-  }, [])
-
-  if (posts.length === 0) return null
+  const hasError = !isLoadingRecent && recentPosts.length === 0 && error
+  if (!isLoadingRecent && recentPosts.length === 0 && !hasError) return null
 
   return (
     <section className="bg-primary relative py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Header Section */}
+        {/* Header Section }
         <div className="grid items-start gap-12 lg:grid-cols-2">
           <div className="space-y-4">
             <div className="mb-6 inline-flex items-center bg-black px-4 py-2">
@@ -66,23 +56,23 @@ export const RecentPost = () => {
           </div>
         </div>
 
-        {/* Articles Grid */}
+        {/* Articles Grid }
         <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {isLoading ? (
+          {isLoadingRecent ? (
             <>
               <PostSkeleton />
               <PostSkeleton />
               <PostSkeleton />
             </>
-          ) : error ? (
+          ) : hasError ? (
             <div className="md:col-span-2 lg:col-span-3">
               <div className="flex flex-col items-center gap-2 text-center text-white">
                 <AlertCircle className="h-8 w-8 text-yellow-400" />
-                <p>{error}</p>
+                <p>No se pudieron cargar los artículos recientes.</p>
               </div>
             </div>
           ) : (
-            posts.map((post) => <RecentPostCard key={post.id} post={post} />)
+            recentPosts.map((post: BlogPost) => <RecentPostCard key={post.id} post={post} />)
           )}
         </div>
       </div>
@@ -91,3 +81,4 @@ export const RecentPost = () => {
 }
 
 export default RecentPost
+*/
