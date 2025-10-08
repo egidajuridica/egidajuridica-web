@@ -4,7 +4,7 @@ export const API_CONFIG = {
   baseURL: import.meta.env.DEV
     ? isBrowser
       ? '/api'
-      : import.meta.env.PUBLIC_API_URL || 'https://egidajuridica.com/api'
+      : import.meta.env.PUBLIC_API_URL || 'https://app.egidajuridica.com/api'
     : import.meta.env.PUBLIC_API_URL || '/api',
   timeout: 10000,
   headers: {

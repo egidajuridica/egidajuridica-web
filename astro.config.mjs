@@ -15,7 +15,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
     server: {
       proxy: {
-        '/api': 'https://egidajuridica.com',
+        '/api': 'https://app.egidajuridica.com/',
       },
     },
   },
